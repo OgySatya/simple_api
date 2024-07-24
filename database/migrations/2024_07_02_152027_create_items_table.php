@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
-            $table->foreignId('catergory_id')->constrained(
+            $table->foreignId('category_id')->constrained(
                 table: 'categories', indexName: 'items_category_id'
             );
             $table->integer('price')->unsigned();

@@ -8,6 +8,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
 
+Route::post('/dashboard', [Dashboard::class, 'report'])->middleware(['auth:sanctum', 'boss']);
 Route::get('/dashboard', [Dashboard::class, 'index'])->middleware(['auth:sanctum', 'boss']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::get('/auth/logout', [AuthController::class, 'logout'])->middleware(['auth:sanctum']);

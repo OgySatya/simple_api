@@ -11,7 +11,7 @@ class Item extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'price', 'image'
+        'name', 'price', 'image', 'category_id'
     ];
     public function categories()
     {

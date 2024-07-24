@@ -34,6 +34,7 @@ class ItemController extends Controller
         $request->validate([
             'name' => 'required|max:255',
             'price' => 'required|integer',
+            'category_id' => 'required|integer',
             'image_file' => 'nullable|mimes:jpg,jpeg',
 
         ]);

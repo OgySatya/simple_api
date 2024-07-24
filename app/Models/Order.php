@@ -47,8 +47,16 @@ class Order extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user(): BelongsTo
+    public function waiter(): BelongsTo
     {
         return $this->belongsTo(User::class, 'waiter_id', 'id');
+    }
+    public function chef(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'chef_id', 'id');
+    }
+    public function cashier(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'cashier_id', 'id');
     }
 }

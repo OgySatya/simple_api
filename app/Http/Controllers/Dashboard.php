@@ -8,6 +8,8 @@ use App\Models\Order;
 use App\Models\Role;
 use Illuminate\Http\Request;
 
+use function Pest\Laravel\get;
+
 class Dashboard extends Controller
 {
     /**
@@ -19,16 +21,22 @@ class Dashboard extends Controller
         $data['totalorder'] = Order::count();
         $data['users'] = Role::all()->loadMissing('users:role_id,name');
         $data['totalitem'] = Item::count();
-        $data['allorder'] = Order::all();
+        $data['allorder'] = Order::all()->loadMissing(['waiter:id,name','chef:id,name','cashier:id,name']);
         return $data;
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function report(Request $request)
     {
-        //
+        $filterData = Order::whereMonth('created_at', $request->month)->get();
+        $data['totalamount'] = $filterData->where('status', 'Lunas')->sum('total_price');
+        $data['totalorder'] = $filterData->count();
+        $data['users'] = Role::all()->loadMissing('users:role_id,name');
+        $data['totalitem'] = Item::count();
+        $data['allorder'] = $filterData->loadMissing(['waiter:id,name','chef:id,name','cashier:id,name']);
+        return response( $data) ;
     }
 
     /**

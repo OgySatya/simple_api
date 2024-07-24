@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Role;
+use App\Models\Order;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,6 +28,10 @@ class User extends Authenticatable
     public function roles()
     {
         return $this->belongsTo(Role::class);
+    }
+    public function Orders()
+    {
+        return $this->hasMany(Order::class);
     }
     /**
      * The attributes that should be hidden for serialization.

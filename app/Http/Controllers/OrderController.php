@@ -85,7 +85,7 @@ class OrderController extends Controller
     public function show(string $id)
     {
         $order = Order::findOrFail($id);
-        return $order->loadMissing('user:id,name', 'orderDetail:order_id,item_id,quantity', 'orderDetail.item:id,name,price');
+        return $order->loadMissing('waiter:id,name', 'orderDetail:order_id,item_id,quantity', 'orderDetail.item:id,name,price');
     }
 
     /**
