@@ -21,7 +21,7 @@ class Dashboard extends Controller
         $data['totalorder'] = Order::count();
         $data['users'] = Role::all()->loadMissing('users:role_id,name');
         $data['totalitem'] = Item::count();
-        $data['allorder'] = Order::all()->loadMissing(['waiter:id,name','chef:id,name','cashier:id,name']);
+        $data['allorder'] = Order::all()->loadMissing(['waiter:id,name', 'chef:id,name', 'cashier:id,name']);
         return $data;
     }
 
@@ -30,13 +30,17 @@ class Dashboard extends Controller
      */
     public function report(Request $request)
     {
-        $filterData = Order::whereMonth('created_at', $request->month)->get();
+        $startDate = $request->start;
+        $endDate = $request->end;
+
+        $filterData = Order::whereBetween('created_at', [$startDate, $endDate])->get();
+        // $filterData = Order::whereMonth('created_at', $request->month)->get();
         $data['totalamount'] = $filterData->where('status', 'Lunas')->sum('total_price');
         $data['totalorder'] = $filterData->count();
         $data['users'] = Role::all()->loadMissing('users:role_id,name');
         $data['totalitem'] = Item::count();
-        $data['allorder'] = $filterData->loadMissing(['waiter:id,name','chef:id,name','cashier:id,name']);
-        return response( $data) ;
+        $data['allorder'] = $filterData->loadMissing(['waiter:id,name', 'chef:id,name', 'cashier:id,name']);
+        return response($data);
     }
 
     /**

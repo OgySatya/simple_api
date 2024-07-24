@@ -14,7 +14,7 @@ class ItemController extends Controller
      */
     public function index()
     {
-        $items = item::all();
+        $items = item::all()->loadMissing('categories:id,name');
         return response($items);
     }
 
