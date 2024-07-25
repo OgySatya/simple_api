@@ -15,7 +15,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return response(Role::all()->loadMissing('users:role_id,name'));
+        return response(Role::all()->loadMissing('users:role_id,name,id'));
     }
 
     /**
@@ -35,7 +35,7 @@ class UserController extends Controller
             'name' => 'required|max:255',
             'email' => 'required|unique:users',
             'password' => 'required|max:255',
-            'role_id' => 'required|'.Rule::in(['1','2','3','4']),
+            'role_id' => 'required|' . Rule::in(['1', '2', '3', '4']),
         ]);
         $request['password'] = Hash::make($request->password);
         $user = User::create($request->all());
@@ -48,7 +48,7 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        return response(User::find($id));
+        return response(User::find($id)->loadMissing('roles:name,id'));
     }
 
     /**
@@ -68,7 +68,7 @@ class UserController extends Controller
             'name' => 'required|max:255',
             'email' => 'required|unique:users',
             'password' => 'required|max:255',
-            'role_id' => 'required|'.Rule::in(['1','2','3','4']),
+            'role_id' => 'required|' . Rule::in(['1', '2', '3', '4']),
         ]);
         $request['password'] = Hash::make($request->password);
         $user = User::findOrFail($id);
@@ -90,5 +90,4 @@ class UserController extends Controller
 
         return 'error user not found.';
     }
-    
 }
