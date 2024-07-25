@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -14,7 +15,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        return response(Role::all()->loadMissing('users:role_id,name'));
     }
 
     /**
@@ -47,7 +48,7 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return response(User::find($id));
     }
 
     /**
@@ -63,7 +64,16 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|max:255',
+            'email' => 'required|unique:users',
+            'password' => 'required|max:255',
+            'role_id' => 'required|'.Rule::in(['1','2','3','4']),
+        ]);
+        $request['password'] = Hash::make($request->password);
+        $user = User::findOrFail($id);
+        $user->update($request->all());
+        return response($user);
     }
 
     /**
@@ -71,6 +81,14 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = User::find($id);
+
+        if ($user) {
+            $user->delete();
+            return 'user deleted successfully.';
+        }
+
+        return 'error user not found.';
     }
+    
 }

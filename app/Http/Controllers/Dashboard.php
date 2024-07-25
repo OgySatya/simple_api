@@ -34,7 +34,6 @@ class Dashboard extends Controller
         $endDate = $request->end;
 
         $filterData = Order::whereBetween('created_at', [$startDate, $endDate])->get();
-        // $filterData = Order::whereMonth('created_at', $request->month)->get();
         $data['totalamount'] = $filterData->where('status', 'Lunas')->sum('total_price');
         $data['totalorder'] = $filterData->count();
         $data['users'] = Role::all()->loadMissing('users:role_id,name');

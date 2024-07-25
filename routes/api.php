@@ -16,11 +16,11 @@ Route::get('/me', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+Route::get('/user', [UserController::class, 'index'])->middleware(['auth:sanctum', 'boss']);
 Route::post('/user', [UserController::class, 'store'])->middleware(['auth:sanctum', 'boss']);
-Route::get('/coba', function () {
-    $data = ["coaba" => "boleh coba"];
-    return response()->json($data, 200);
-});
+Route::get('/user/{id}', [UserController::class, 'show'])->middleware(['auth:sanctum', 'boss']);
+Route::put('/user/{id}', [UserController::class, 'update'])->middleware(['auth:sanctum', 'boss']);
+Route::delete('/user', [UserController::class, 'destroy'])->middleware(['auth:sanctum', 'boss']);
 
 Route::get('/order', [OrderController::class, 'index'])->middleware(['auth:sanctum']);
 Route::get('/order/{id}', [OrderController::class, 'show'])->middleware(['auth:sanctum']);
