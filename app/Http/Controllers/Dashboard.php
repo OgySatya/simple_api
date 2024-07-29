@@ -19,7 +19,7 @@ class Dashboard extends Controller
     {
         $data['totalamount'] = Order::where('status', 'Lunas')->sum('total_price');
         $data['totalorder'] = Order::count();
-        $data['users'] = Role::all()->loadMissing('users:role_id,name');
+        $data['users'] = User::count();
         $data['totalitem'] = Item::count();
         $data['allorder'] = Order::all()->loadMissing(['waiter:id,name', 'chef:id,name', 'cashier:id,name']);
         return $data;
@@ -36,7 +36,7 @@ class Dashboard extends Controller
         $filterData = Order::whereBetween('created_at', [$startDate, $endDate])->get();
         $data['totalamount'] = $filterData->where('status', 'Lunas')->sum('total_price');
         $data['totalorder'] = $filterData->count();
-        $data['users'] = Role::all()->loadMissing('users:role_id,name');
+        $data['users'] = User::count();
         $data['totalitem'] = Item::count();
         $data['allorder'] = $filterData->loadMissing(['waiter:id,name', 'chef:id,name', 'cashier:id,name']);
         return response($data);
