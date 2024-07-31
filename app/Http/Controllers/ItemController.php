@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
+use App\Http\Requests\ItemPostRequest;
 use App\Models\Item;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -29,25 +30,17 @@ class ItemController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ItemPostRequest $request)
     {
-        $request->validate([
-            'name' => 'required|max:255',
-            'price' => 'required|integer',
-            'category_id' => 'required|integer',
-            'image_file' => 'nullable|mimes:jpg,jpeg',
-
-        ]);
-        if ($request->file('image_file')) {
-            $file = $request->file('image_file');
+        $data = $request->validated();
+        if ($data["image_file"]) {
+            $file = $data["image_file"];
             $fileName = $file->getClientOriginalName();
             $newName = Carbon::now()->timestamp . '_' . $fileName;
 
             Storage::disk('public')->putFileAs('item', $file, $newName);
-            $request['image'] = $newName;
         }
-
-        $item = Item::create($request->all());
+        $item = Item::create($data + ['image' => asset("storage/item/" . $newName)]);
         return response($item);
     }
 
@@ -77,7 +70,6 @@ class ItemController extends Controller
             'name' => 'required|max:255',
             'price' => 'required|integer',
             'image_file' => 'nullable|mimes:jpg,jpeg',
-
         ]);
         if ($request->file('image_file')) {
             $file = $request->file('image_file');
@@ -85,7 +77,7 @@ class ItemController extends Controller
             $newName = Carbon::now()->timestamp . '_' . $fileName;
 
             Storage::disk('public')->putFileAs('item', $file, $newName);
-            $request['image'] = $newName;
+            $request['image'] = asset("storage/item/" . $newName);
         }
         $item = item::findOrFail($id);
         $item->update($request->all());

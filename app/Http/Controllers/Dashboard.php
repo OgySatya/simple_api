@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
-use App\Models\User;
 use App\Models\Order;
-use App\Models\Role;
-use Illuminate\Http\Request;
-
+use App\Models\User;
 use function Pest\Laravel\get;
+use Illuminate\Http\Request;
 
 class Dashboard extends Controller
 {
@@ -30,10 +28,18 @@ class Dashboard extends Controller
      */
     public function report(Request $request)
     {
-        $startDate = $request->start;
-        $endDate = $request->end;
+        $startDate = $request->get('start', null);
+        $endDate = $request->get('end', null);
 
-        $filterData = Order::whereBetween('created_at', [$startDate, $endDate])->get();
+        $filterData = Order::query();
+        if ($startDate) {
+            $filterData = $filterData->whereDate('created_at', '>=', $startDate);
+        }
+        if ($endDate) {
+            $filterData = $filterData->whereDate('created_at', '<=', $endDate);
+        }
+        $filterData = $filterData->get();
+
         $data['totalamount'] = $filterData->where('status', 'Lunas')->sum('total_price');
         $data['totalorder'] = $filterData->count();
         $data['users'] = User::count();

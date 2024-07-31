@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Item;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -15,7 +16,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $order = Order::all()->select(
+        $order = Order::all([
             'id',
             'costomer_name',
             'table_number',
@@ -23,7 +24,7 @@ class OrderController extends Controller
             'status',
             'total_price',
             'waiter_id',
-        );
+        ]);
         return $order;
     }
 
@@ -56,16 +57,24 @@ class OrderController extends Controller
 
             $order = Order::create($data);
 
-            collect($data['items'])->map(function ($item) use ($order) {
-                $pesanan = Item::where('id', $item)->first();
-                OrderDetail::create([
+            // menyiapkan array id [1, 2, 3, 4]
+            $menuIds = collect($data['items'])->map(function ($item) {
+                return $item["id"];
+            })->toArray();
+            $menus = Item::whereIn('id', $menuIds)->get();
+
+            // menyiapkan array order detail
+            $itemDetails = collect($data['items'])->map(function ($item, $index) use ($order, $menus) {
+                return [
                     'order_id' => $order->id,
                     'item_id' => $item['id'],
                     'quantity' => $item['quantity'],
-                    'price' => ($pesanan->price * $item['quantity'])
-
-                ]);
-            });
+                    'price' => ($menus[$index]->price * $item['quantity']),
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ];
+            })->toArray();
+            OrderDetail::insert($itemDetails);
 
             $order->total_price = $order->totalPrice();
             $order->save();
@@ -124,13 +133,14 @@ class OrderController extends Controller
      */
     public function destroy(string $id)
     {
-        $order = Order::find($id);
+        try {
+            $order = Order::findOrFail($id);
 
-        if ($order) {
             $order->delete();
             return 'order deleted successfully.';
+        } catch (\Throwable $th) {
+            return 'error order not found.';
         }
 
-        return 'error order not found.';
     }
 }

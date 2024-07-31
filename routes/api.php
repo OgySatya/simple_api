@@ -1,15 +1,15 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\ItemController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\UserController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
-Route::post('/dashboard', [Dashboard::class, 'report'])->middleware(['auth:sanctum', 'boss']);
-Route::get('/dashboard', [Dashboard::class, 'index'])->middleware(['auth:sanctum', 'boss']);
+Route::get('/dashboard', [Dashboard::class, 'report'])->middleware(['auth:sanctum', 'boss']);
+// Route::get('/dashboard', [Dashboard::class, 'index'])->middleware(['auth:sanctum', 'boss']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::get('/auth/logout', [AuthController::class, 'logout'])->middleware(['auth:sanctum']);
 Route::get('/me', function (Request $request) {

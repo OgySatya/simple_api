@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -15,15 +15,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        return response(Role::all()->loadMissing('users:role_id,name,id'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $roles = Role::with(['users'])->get();
+        return $roles;
     }
 
     /**
@@ -35,7 +28,8 @@ class UserController extends Controller
             'name' => 'required|max:255',
             'email' => 'required|unique:users',
             'password' => 'required|max:255',
-            'role_id' => 'required|' . Rule::in(['1', '2', '3', '4']),
+            // 'role_id' => 'required|' . Rule::in(['1', '2', '3', '4']),
+            'role_id' => 'required|exists:App\Models\Role,id',
         ]);
         $request['password'] = Hash::make($request->password);
         $user = User::create($request->all());
@@ -49,14 +43,6 @@ class UserController extends Controller
     public function show(string $id)
     {
         return response(User::find($id)->loadMissing('roles:name,id'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
     }
 
     /**

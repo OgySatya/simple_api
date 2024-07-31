@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use App\Models\OrderDetail;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Order extends Model
 {
@@ -25,6 +25,7 @@ class Order extends Model
     public function totalPrice()
     {
         $order = OrderDetail::where('order_id', $this->id)->pluck('price');
+        // $sum = OrderDetail::where('order_id', $this->id)->sum('price');
         $sum = collect($order)->sum();
         return $sum;
     }
