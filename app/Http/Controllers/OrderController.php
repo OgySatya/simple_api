@@ -100,10 +100,10 @@ class OrderController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function orderReady(Request $request, string $id)
+    public function orderReady(string $id)
     {
         $order = Order::findOrFail($id);
-        $order->chef_id = $request->id;
+        $order->chef_id = auth()->user()->id;
         $order->status = 'Ready';
         $order->save();
         return response($order);
@@ -141,6 +141,5 @@ class OrderController extends Controller
         } catch (\Throwable $th) {
             return 'error order not found.';
         }
-
     }
 }

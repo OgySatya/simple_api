@@ -24,7 +24,7 @@ Route::delete('/user', [UserController::class, 'destroy'])->middleware(['auth:sa
 
 Route::get('/order', [OrderController::class, 'index'])->middleware(['auth:sanctum']);
 Route::get('/order/{id}', [OrderController::class, 'show'])->middleware(['auth:sanctum']);
-Route::post('/order/{id}/kitchen', [OrderController::class, 'orderReady'])->middleware(['auth:sanctum', 'cook']);
+Route::get('/order/{id}/kitchen', [OrderController::class, 'orderReady'])->middleware(['auth:sanctum', 'cook']);
 Route::get('/order/{id}/waiter', [OrderController::class, 'serve'])->middleware(['auth:sanctum', 'retainer']);
 Route::get('/order/{id}/payment', [OrderController::class, 'payment'])->middleware(['auth:sanctum', 'payment']);
 Route::post('/order', [OrderController::class, 'store'])->middleware(['auth:sanctum', 'retainer']);
