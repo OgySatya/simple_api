@@ -20,7 +20,7 @@ Route::get('/user', [UserController::class, 'index'])->middleware(['auth:sanctum
 Route::post('/user', [UserController::class, 'store'])->middleware(['auth:sanctum', 'boss']);
 Route::get('/user/{id}', [UserController::class, 'show'])->middleware(['auth:sanctum', 'boss']);
 Route::put('/user/{id}', [UserController::class, 'update'])->middleware(['auth:sanctum', 'boss']);
-Route::delete('/user', [UserController::class, 'destroy'])->middleware(['auth:sanctum', 'boss']);
+Route::delete('/user/{id}', [UserController::class, 'destroy'])->middleware(['auth:sanctum', 'boss']);
 
 Route::get('/order', [OrderController::class, 'index'])->middleware(['auth:sanctum']);
 Route::get('/order/{id}', [OrderController::class, 'show'])->middleware(['auth:sanctum']);
